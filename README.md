@@ -34,9 +34,14 @@ We aim to:
 ### Data Sources
 
 a. [IMDB](imdb.com)
+
 b.[Box Office Mojo](boxofficemojo.com)
+
 c.[The Numbers](the-numbers.com)
+
 d.[The MovieDB](themoviedb.org)
+
+
 
 
 ### Data Description
@@ -77,7 +82,7 @@ Our data analysis will include visualizations such as:
 
 
 
-![alt text]("C:\Users\Lenovo\Downloads\genre.png")
+![alt text](image-1.png)
 
 
 ###Explanation
@@ -100,7 +105,7 @@ Cost-Effective Genres: Comedy and Documentary are among the lower-budget genres 
 ### 2.  Plots of different performance and success metrics and the studio
 
 
-![alt text]("C:\Users\Lenovo\Downloads\studio.png")
+![alt text](image-2.png)
 
 
 #### Explaination
@@ -111,7 +116,10 @@ As shown above, BV and P/DW studios generated the highest income. We want to loo
 ### 3.  Correlation Analysis
 
 
-![alt text]("C:\Users\Lenovo\Downloads\correlation.png")
+![alt text](image.png)
+
+
+
 
 
 #### Explaination
