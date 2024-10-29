@@ -85,7 +85,7 @@ Our data analysis will include visualizations such as:
 ![alt text](image-1.png)
 
 
-###Explanation
+#### Explanation
 Top Genres by Popularity: The most popular genres are fantasy, action, sci-fi, adventure, and animation. Large audiences are generally drawn to these genres because of their immersive settings, high-energy narratives, and visual effects. involvement of the Audience: Popular genres typically have high levels of audience involvement on streaming platforms, social media, and trailers, which is crucial for generating initial viewer interest and marketing momentum.
 
 High Vote Total Genres: The genres with the greatest vote averages are drama, comedy, and action, suggesting that they are highly viewed and rated. This popularity indicates that viewers who are interested in plot and character nuance are drawn to these genres.
@@ -108,7 +108,7 @@ Cost-Effective Genres: Comedy and Documentary are among the lower-budget genres 
 ![alt text](image-2.png)
 
 
-#### Explaination
+#### Explanation
 
 As shown above, BV and P/DW studios generated the highest income. We want to look at what kind of genres they produced.
 
@@ -122,7 +122,7 @@ As shown above, BV and P/DW studios generated the highest income. We want to loo
 
 
 
-#### Explaination
+#### Explanation
 Both domestic gross (0.48) and worldwide gross (0.52) have moderately positive associations with the popularity of films, suggesting that popular films tend to bring in more money. Though popularity plays a role in box office success, it is not the only one, as evidenced by the weaker association between popularity and production expenditure. Furthermore, there is a moderate correlation between popularity and production budget (0.51), suggesting that movies with bigger budgets typically have greater appeal and visibility due to improved marketing campaigns and better production quality.
 
 However, there is a substantial positive association between the production budget and the worldwide gross (0.76), suggesting that films with larger budgets are more likely to do well in international markets.
