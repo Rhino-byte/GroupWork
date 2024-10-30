@@ -82,7 +82,7 @@ Our data analysis will include visualizations such as:
 
 
 
-![alt text](image-1.png)
+![alt text](Images/image-1.png)
 
 
 #### Explanation
@@ -105,7 +105,7 @@ Cost-Effective Genres: Comedy and Documentary are among the lower-budget genres 
 ### 2.  Plots of different performance and success metrics and the studio
 
 
-![alt text](image-2.png)
+![alt text](Images/image-2.png)
 
 
 #### Explanation
@@ -116,7 +116,7 @@ As shown above, BV and P/DW studios generated the highest income. We want to loo
 ### 3.  Correlation Analysis
 
 
-![alt text](image.png)
+![alt text](Images/image.png)
 
 
 
