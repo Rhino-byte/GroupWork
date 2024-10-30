@@ -145,9 +145,9 @@ To wrap it up, investing in these well-liked genres while maintaining a balanced
 
 3.Release timing: Prioritize releasing films during Q2 (April–June) to capitalize on the historically higher median and broader range of worldwide gross revenues.
 
-4. Studio collaborating: Consider collaborating with the following studios: Paramount/DreamWorks(P/DW), Buena Vista (Disney)(BV), Sony and Metro-Goldwyn-Mayer(MGM) since their movies seem to show high performance on the success metrics.
+4.Studio collaborating: Consider collaborating with the following studios: Paramount/DreamWorks(P/DW), Buena Vista (Disney)(BV), Sony and Metro-Goldwyn-Mayer(MGM) since their movies seem to show high performance on the success metrics.
 
-5. Market research and localization: conduct comprehensive market research to understand specific international market cultural preferences and nuances. Adapt the concept of movies, promotion campaigns, and strategic means of distribution to resonate in consonance with the target audience's cultural sensibility and reach maximum global appeal.
+5.Market research and localization: conduct comprehensive market research to understand specific international market cultural preferences and nuances. Adapt the concept of movies, promotion campaigns, and strategic means of distribution to resonate in consonance with the target audience's cultural sensibility and reach maximum global appeal.
 
 
 
