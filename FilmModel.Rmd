@@ -19,10 +19,11 @@ library(car) # check vif of the model
 
 The dataset can be located from this github [repo](https://github.com/Rhino-byte/GroupWork/blob/main/Data/Merged_data.csv)
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, paged.print=TRUE}
 # Import data
 Merged_data <- read_csv('Cleaned_data.csv')
-head(Merged_data)
+#Merged_data <- read_csv('Merged_data.csv')
+names(Merged_data)
 
 ```
 
@@ -60,7 +61,9 @@ Merged_data %>% filter(!worldwide_gross <= 0) -> Merged_data
 
 ```{r}
 #
-Merged_data %>% select(runtime_minutes,averagerating,popularity,production_budget,domestic_gross,foreign_gross,worldwide_gross)->Model_data
+Merged_data %>% select(runtime_minutes,vote_average,popularity
+                    ,production_budget,domestic_gross,foreign_gross
+                    ,worldwide_gross)->Model_data
 
 # Split the data for Train and test data
 Y = Model_data$worldwide_gross
@@ -72,11 +75,23 @@ train_data =subset(Model_data,sample_sl==TRUE)
 test_data =subset(Model_data,sample_sl==FALSE)
 
 # Fit GLM gamma model
-Fit_model=glm(worldwide_gross~.,family = Gamma(link = "log"),data = train_data)
+Fit_model=glm(worldwide_gross~. -runtime_minutes,family = Gamma(link = "log"),data = train_data)
 
+# Model 2
+model2 =glm(worldwide_gross~ domestic_gross + foreign_gross,family = Gamma(link = "log"),data = train_data)
+
+# Model 3
+model3 =glm(worldwide_gross~ production_budget,family = Gamma(link = "log"),data = train_data)
+
+exp(1.793e+01) #+ exp(1.374e-08)*30000000
+-exp(1.374e-03) #+ exp(1.374e-08)*30000000
+summary(train_data$production_budget)
+
+summary.glm(model3)
 
 # Summary of the model
-pander::pander(summary.glm(Fit_model))
+#pander::pander(summary.glm(Fit_model))
+summary.glm(Fit_model)
 ```
 
 ### Interpreting the glm model
@@ -117,7 +132,7 @@ Each predictor in the model has an associated estimated coefficient, its standar
 
 This model suggests that `popularity`, `production_budget`, `domestic_gross`, and `foreign_gross` are the primary predictors of `worldwide_gross`, with statistically significant positive associations. Although `averagerating` shows a significant but small negative impact, the impact of `runtime_minutes` does not appear statistically relevant in this context.
 
-### Check Assumptions
+### Assumptions 
 
 #### Linearity
 ```{r,warning=FALSE,message=FALSE}
@@ -132,7 +147,14 @@ Based on the pair plot we can conclude that their is linearity between Dependent
 ```{r paged.print=TRUE}
 car::vif(Fit_model)
 ```
-Based on the VIF (Variance Inflation Factor) w can conclude there is no multicollinearity between the independent variables
+Based on the VIF (Variance Inflation Factor) since no value is greater than 4 indicating low correlation between the independent variables but something worth looking is the relationship between domestic_gross and foreign_gross they tend to have moderate colinearity we can conclude there is no multicollinearity between the independent variables
+
+
+```{r,warning=FALSE,message=FALSE}
+# Create a column that contains the sum of the foreign and domestic returns
+train_data %>% mutate(worldwide = foreign_gross + domestic_gross)%>% select(domestic_gross:worldwide)->Corr_data
+GGally::ggpairs(Corr_data)
+```
 
 
 ### Heteroscedasticity
