@@ -1,0 +1,186 @@
+---
+title: "GLM model on Film data"
+output:
+  pdf_document: default
+  html_notebook: default
+  word_document: default
+---
+
+## Import Necessary packages
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lmtest)
+library(caTools)
+library(pander) #Table format
+library(performance)
+library(car) # check vif of the model
+```
+
+The dataset can be located from this github [repo](https://github.com/Rhino-byte/GroupWork/blob/main/Data/Merged_data.csv)
+
+```{r message=FALSE, warning=FALSE, paged.print=TRUE}
+# Import data
+Merged_data <- read_csv('Cleaned_data.csv', 
+                          skip = 1)
+#Merged_data <- read_csv('Merged_data.csv')
+names(Merged_data)
+
+```
+
+## Data Cleaning/ Preparation
+
+```{r}
+# Check for duplicates
+sum(duplicated(Merged_data))
+```
+
+```{r}
+# Check missing values
+pander::pander(colSums(is.na(Merged_data)))
+
+```
+
+For this regression model we are interested in understanding the relationship between the worldwide gross for movie production against various variables in our models. The Dependent variable is **Worldwide_gross**
+
+```{r}
+# Invetsigate the properties of dependent variable
+ggplot(data = Merged_data,aes(x=worldwide_gross))+geom_density()+theme_classic()
+# There is alot of skewness in the data (positive skewness)
+
+# Test for normality in the data
+ks.test(Merged_data$worldwide_gross,"pnorm")
+# Normality test violated a glm model that uses the gamma distribution would be effective to try and model the relationship 
+```
+
+```{r}
+# remove rows where the gross returns is zero
+Merged_data %>% filter(!worldwide_gross <= 0) -> Merged_data
+```
+
+## GLM models
+
+```{r}
+#
+Merged_data %>% select(runtime_minutes,vote_average,popularity
+                    ,production_budget,domestic_gross,foreign_gross
+                    ,worldwide_gross)->Model_data
+
+# Split the data for Train and test data
+Y = Model_data$worldwide_gross
+sample_sl =sample.split(Y,SplitRatio = 3/4)
+
+# Create Train and test data
+train_data =subset(Model_data,sample_sl==TRUE)
+
+test_data =subset(Model_data,sample_sl==FALSE)
+
+# Fit GLM gamma model
+Fit_model=glm(worldwide_gross~. -runtime_minutes,family = Gamma(link = "log"),data = train_data)
+
+# Model 2
+model2 =glm(worldwide_gross~ domestic_gross + foreign_gross,family = Gamma(link = "log"),data = train_data)
+
+# Model 3
+model3 =glm(worldwide_gross~ production_budget,family = Gamma(link = "log"),data = train_data)
+
+exp(1.793e+01) #+ exp(1.374e-08)*30000000
+-exp(1.374e-03) #+ exp(1.374e-08)*30000000
+summary(train_data$production_budget)
+
+summary.glm(model3)
+
+# Summary of the model
+#pander::pander(summary.glm(Fit_model))
+summary.glm(Fit_model)
+```
+
+### Interpreting the glm model
+
+This generalized linear model (GLM) with a Gamma distribution and log link function is used to model the relationship between `worldwide_gross` and several predictors related to movie characteristics. Here's an interpretation of the results:
+
+### Residuals
+
+The deviance residuals summary provides a quick look at the spread of residuals:
+
+-   **Min, 1Q, Median, 3Q, Max** values suggest that residuals are moderately centered around zero, indicating an acceptable fit. However, some residuals have relatively large negative and positive values, implying a few observations deviate notably from the model’s predictions.
+
+### Coefficients
+
+Each predictor in the model has an associated estimated coefficient, its standard error, and p-value:
+
+-   **(Intercept)**: The intercept is significant, with a large positive estimate (17.78), representing the baseline log of worldwide gross when all other predictors are at zero.
+
+-   **runtime_minutes**: This variable has a negative coefficient (-0.0007785), but it is not statistically significant (p = 0.472), meaning `runtime_minutes` does not appear to have a substantial impact on worldwide gross in this model.
+
+-   **averagerating**: This has a significant negative effect (-0.0446, p = 0.027), suggesting that, holding other factors constant, higher ratings are weakly associated with lower worldwide gross, though the effect is relatively small.
+
+-   **popularity**: This variable has a positive and statistically significant coefficient (0.009753, p = 0.0005), indicating a positive association with worldwide gross—higher popularity scores are associated with higher gross earnings.
+
+-   **production_budget**: A positive and significant effect (3.83e-09, p \< 0.001), implying that larger production budgets lead to higher worldwide gross, though the impact is small per unit increase in budget.
+
+-   **domestic_gross** and **foreign_gross**: Both are highly significant (p \< 0.001) and positively associated with `worldwide_gross`, with each having an estimated impact proportional to their gross values, underscoring their strong, direct contributions to worldwide gross.
+
+### Model Fit
+
+-   **Dispersion parameter**: The estimated dispersion parameter for the Gamma family is 0.399962, suggesting moderate variability around the fitted values.
+
+-   **Deviance**: The residual deviance (745.68) is much lower than the null deviance (1894.53), indicating that the model significantly reduces deviance (improves fit) compared to a null model without predictors.
+
+-   **AIC**: The Akaike Information Criterion (AIC) of 38770 can be used to compare this model with other potential models, where a lower AIC generally indicates a better fit.
+
+### Conclusion
+
+This model suggests that `popularity`, `production_budget`, `domestic_gross`, and `foreign_gross` are the primary predictors of `worldwide_gross`, with statistically significant positive associations. Although `averagerating` shows a significant but small negative impact, the impact of `runtime_minutes` does not appear statistically relevant in this context.
+
+### Assumptions 
+
+#### Linearity
+```{r,warning=FALSE,message=FALSE}
+GGally::ggpairs(train_data)
+
+```
+
+Based on the pair plot we can conclude that their is linearity between Dependent and Independent variables in the models
+
+
+#### Multicollinearity
+```{r paged.print=TRUE}
+car::vif(Fit_model)
+```
+Based on the VIF (Variance Inflation Factor) since no value is greater than 4 indicating low correlation between the independent variables but something worth looking is the relationship between domestic_gross and foreign_gross they tend to have moderate colinearity we can conclude there is no multicollinearity between the independent variables
+
+
+```{r,warning=FALSE,message=FALSE}
+# Create a column that contains the sum of the foreign and domestic returns
+train_data %>% mutate(worldwide = foreign_gross + domestic_gross)%>% select(domestic_gross:worldwide)->Corr_data
+GGally::ggpairs(Corr_data)
+```
+
+
+### Heteroscedasticity
+```{r}
+bptest(Fit_model)
+```
+The p-value is less than 0.05.This indicates that there is  significant evidence of heteroscedasticity in the residuals of the regression model. Therefore, we can conclude that the assumption of homoscedasticity is violated for this model, meaning the variance of the error terms is constant across observations.
+
+#### Normality of residuals
+```{r}
+shapiro.test(Fit_model$residuals)
+check_normality(Fit_model$residuals)
+```
+
+```{r}
+qqnorm(Fit_model$residuals)
+qqline(Fit_model$residuals)
+
+```
+
+Normality is violated the residuals are not normally distributed. From the qqplot we can observe that the residuals  tend to move away from the residuals plot indicating non-normality in residuals.This can be confirmed by the statistical test from the performance package. 
+
+#### Independence of observation
+```{r}
+check_autocorrelation(Fit_model)
+```
+
+Autocorrelation is present Indicating there is correlation which is dependent on time. Implying that time influences  the worldwide_gross which based on the data we concluded that time influences the data in terms of genres and the release date
